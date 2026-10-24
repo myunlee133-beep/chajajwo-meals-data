@@ -76,13 +76,6 @@ def build() -> dict:
     }
 
 
-if __name__ == "__main__":
-    _check()
-    out = Path(sys.argv[1])
-    out.write_text(json.dumps(build(), ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
-    print(f"wrote {out} ({out.stat().st_size // 1024} KB)")
-
-
 def _check() -> None:
     days = [f"2026-10-{d:02d}" for d in range(1, 21)]
     daily = [{"date": d, "unit": "U", "meal": "LUNCH", "name": "fixed", "priceWon": 1} for d in days]
@@ -92,3 +85,10 @@ def _check() -> None:
     assert sorted(m["date"] for m in out if m["name"] == "rare") == days[:3]
     only_few_days = [{"date": d, "unit": "W", "meal": "LUNCH", "name": "same", "priceWon": 1} for d in days[:8]]
     assert all(m["date"] for m in fold_fixed(daily + only_few_days) if m["name"] == "same")
+
+
+if __name__ == "__main__":
+    _check()
+    out = Path(sys.argv[1])
+    out.write_text(json.dumps(build(), ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    print(f"wrote {out} ({out.stat().st_size // 1024} KB)")
